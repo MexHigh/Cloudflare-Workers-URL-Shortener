@@ -5,7 +5,7 @@ compatibility_date = "2023-01-25"
 account_id = "db7060081e8c2ca8e98189dbb3534b28"
 
 workers_dev = true
-#route = "s.leon.wtf/*"
+route = "s.leon.wtf/*"
 
 kv_namespaces = [
     { binding = "DB", id = "74d372d5ba53415693dfb046772d1647", preview_id = "74d372d5ba53415693dfb046772d1647" }

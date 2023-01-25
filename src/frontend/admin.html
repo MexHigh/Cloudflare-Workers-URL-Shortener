@@ -6,20 +6,9 @@
 <body>
     <div class="text-centered">
         <h2>Admin panel</h2>
-        <h3>Current shortlinks</h3>
-        <table class="div-centered">
-            <thead>
-                <tr>
-                    <th>Short name</th>
-                    <th>Target URL</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody id="shortlinkList"></tbody>
-        </table>
-        <br>
+
         <h3>Add new shortlink</h3>
-        <form id="form">
+        <form id="form" autocomplete="off">
             <label for="name">Name</label><br>
             <input type="text" id="name" name="name"><br><br>
     
@@ -29,6 +18,20 @@
             <input type="submit" value="Add shortlink">
         </form>
         <p id="errMsg"></p>
+        
+        <br>
+        
+        <h3>Current shortlinks</h3>
+        <table class="div-centered table">
+            <thead>
+                <tr>
+                    <th>Short name</th>
+                    <th>Target URL</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="shortlinkList"></tbody>
+        </table>
     </div>
     <script>
         function getUrlShortenerToken() {
@@ -122,6 +125,5 @@
                     shortlinks.appendChild(tr)
                 }
             })
-
     </script>
 </body>

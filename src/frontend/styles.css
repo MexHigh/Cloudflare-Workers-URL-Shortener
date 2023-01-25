@@ -3,7 +3,6 @@
 }
 
 .div-centered {
-    width: fit-content;
     margin: auto;
 }
 
@@ -22,4 +21,11 @@ th, td {
 
     padding-left: 8px;
     padding-right: 8px;
+
+    min-width: 50px;
+    max-width: 600px;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
