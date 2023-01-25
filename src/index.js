@@ -1,56 +1,6 @@
-const indexHTML = `<!DOCTYPE html>
-<body>
-  <h2>leon.wtf URL shortener</h2>
-  <p>Please provide a shortlink in the URL</p>
-</body>`
-
-const adminLoginHTML = `<!DOCTYPE html>
-<body>
-  <h2>Login</h2>
-  <form>
-    <label for="auth">Admin token:</label><br>
-    <input type="text" id="auth" name="auth"><br><br>
-    <input type="submit" value="Login">
-  </form>
-</body>`
-
-const adminHTML = `<!DOCTYPE html>
-<body>
-  <h2>Admin panel</h2>
-  <form>
-    <label for="name">Shortlink name:</label><br>
-    <input type="text" id="name" name="name"><br>
-
-    <label for="target">Shortlink target URL:</label><br>
-    <input type="url" id="target" name="target"><br><br>
-    
-    <input type="submit" value="Add shortlink">
-  </form>
-  <p></p>
-  <script>
-    function handleSubmit(event) {
-      event.preventDefault()
-      let data = new FormData(event.target)
-      let values = Object.fromEntries(data.entries())
-      
-      fetch("/api/shortlink", {
-        method: "POST",
-        headers: {
-          "Authorization": values.auth
-        },
-        body: {
-          "name": values.name,
-          "target": values.target
-        }
-      }).then(async (r) => {
-        let resMsg = document.querySelector("p")
-        resMsg.innerHTML = await r.text()
-      })
-    }
-    let form = document.querySelector("form");
-    form.addEventListener("submit", handleSubmit);
-  </script>
-</body>`
+import indexHTML from "./index.html"
+import adminHTML from "./admin.html"
+import adminLoginHTML from "./admin_login.html"
 
 function getCookieValue(cookies, name) {
 	const value = `; ${cookies}`;
