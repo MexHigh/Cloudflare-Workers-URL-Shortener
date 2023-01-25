@@ -73,15 +73,20 @@ export default {
 
 				case "/admin/login":
 					{
+						let cookies = headers.get("Cookie")
+						let token = getCookieValue(cookies, "url-shortener-token")
+						if (token && await authOk(token)) {
+							return Response.redirect(protocol + "//" + host + "/admin")
+						}
+
 						return new Response(adminLoginHTML, {
 							headers: { "content-type": "text/html;charset=UTF-8" }
 						})
 					}
 
-				// api
 				case "/api/auth-ok":
 					{
-						if (method != "POST") {
+						if (method != "GET") {
 							return new Response("Method not allowed", { status: 405 })
 						}
 						let token = headers.get("x-api-key")
@@ -92,24 +97,30 @@ export default {
 					}
 
 				case "/api/shortlink":
+					// check method and authentication
+					switch (method) {
+						case "GET":
+						case "POST":
+						case "DELETE":
+							let token = headers.get("x-api-key")
+							if (!await authOk(token)) {
+								return new Response("Unauthorized", { status: 401 })
+							}
+							break
+						default:
+							return new Response("Method not allowed", { status: 405 })
+					}
+
+					// routes
 					switch (method) {
 						case "GET":
 							{
-								let token = headers.get("x-api-key")
-								if (!await authOk(token)) {
-									return new Response("Unauthorized", { status: 401 })
-								}
 								let redirectMapping = await env.DB.get("redirect-mapping", { type: "json" })
 								return Response.json(redirectMapping)
 							}
 
 						case "POST": 
 							{
-								let token = headers.get("x-api-key")
-								if (!await authOk(token)) {
-									return new Response("Unauthorized", { status: 401 })
-								}
-	
 								let body = await request.json()
 								if (!body.name || !body.target) {
 									return new Response("\"name\" or \"target\" is empty", { status: 400 })
@@ -127,11 +138,6 @@ export default {
 
 						case "DELETE":
 							{
-								let token = headers.get("x-api-key")
-								if (!await authOk(token)) {
-									return new Response("Unauthorized", { status: 401 })
-								}
-	
 								let body = await request.json()
 								if (body.name === undefined) {
 									return new Response("\"name\" is empty", { status: 400 })
@@ -146,10 +152,11 @@ export default {
 	
 								return new Response("Ok", { status: 200 })
 							}
-
-						default:
-							return new Response("Method not allowed", { status: 405 })
 					}
+			}
+
+			if (method !== "GET") {
+				return new Response("Method not allowed", { status: 405 })
 			}
 
 			const pathnameParts = pathname.split("/")

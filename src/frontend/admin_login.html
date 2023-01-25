@@ -18,7 +18,7 @@
             event.preventDefault()
             let authToken = document.getElementById("auth").value
             fetch("/api/auth-ok", {
-                method: "POST",
+                method: "GET",
                 headers: {
                     "x-api-key": authToken
                 }
