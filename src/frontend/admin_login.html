@@ -24,7 +24,7 @@
                 }
             }).then(async (r) => {
                 if (r.ok) {
-                    document.cookie = `url-shortener-token=${authToken}`
+                    document.cookie = `url-shortener-token=${authToken}; Secure`
                     window.location = "/admin"
                 } else {
                     let errMsg = document.querySelector("p")

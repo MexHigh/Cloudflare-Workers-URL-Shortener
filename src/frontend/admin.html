@@ -18,22 +18,34 @@
         <p></p>
     </div>
     <script>
+        function getUrlShortenerToken() {
+            let cookies = `; ${document.cookie}`;
+            let parts = cookies.split(`; url-shortener-token=`)
+            if (parts.length === 2) return parts.pop().split(";").shift() 
+        }
+
         function handleSubmit(event) {
             event.preventDefault()
             let data = new FormData(event.target)
             let values = Object.fromEntries(data.entries())
 
+            let resMsg = document.querySelector("p")
+            let token = getUrlShortenerToken()
+            if (!token) {
+                resMsg.innerHTML = "Unable to retrieve token from cookie, please go to /admin/login"
+                return false
+            }
+
             fetch("/api/shortlink", {
                 method: "POST",
                 headers: {
-                    "Authorization": values.auth
+                    "x-api-key": token
                 },
-                body: {
+                body: JSON.stringify({
                     "name": values.name,
                     "target": values.target
-                }
+                })
             }).then(async (r) => {
-                let resMsg = document.querySelector("p")
                 resMsg.innerHTML = await r.text()
             })
         }

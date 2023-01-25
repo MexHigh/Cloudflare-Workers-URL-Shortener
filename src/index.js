@@ -99,7 +99,6 @@ export default {
 								if (!await authOk(token)) {
 									return new Response("Unauthorized", { status: 401 })
 								}
-	
 								let redirectMapping = await env.DB.get("redirect-mapping", { type: "json" })
 								return Response.json(redirectMapping)
 							}
