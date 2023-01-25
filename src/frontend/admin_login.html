@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="centered">
+        <h2>Login</h2>
+        <form>
+            <label for="auth">Admin token</label><br>
+            <input type="text" id="auth" name="auth"><br><br>
+            <input type="submit" value="Login">
+        </form>
+        <p></p>
+    </div>
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault()
+            let authToken = document.getElementById("auth").value
+            fetch("/api/auth-ok", {
+                method: "POST",
+                headers: {
+                    "x-api-key": authToken
+                }
+            }).then(async (r) => {
+                if (r.ok) {
+                    document.cookie = `url-shortener-token=${authToken}`
+                    window.location = "/admin"
+                } else {
+                    let errMsg = document.querySelector("p")
+                    errMsg.innerHTML = await r.text()
+                    setTimeout(() => {
+                        errMsg.innerHTML = ""
+                    }, 3000)
+                }
+            })
+        }
+        let form = document.querySelector("form")
+        form.addEventListener("submit", handleSubmit)
+    </script>
+</body>

@@ -1,12 +1,12 @@
 {
-  "name": "url-shortener",
-  "version": "0.0.0",
-  "devDependencies": {
-    "wrangler": "2.8.1"
-  },
-  "private": true,
-  "scripts": {
-    "start": "wrangler dev",
-    "deploy": "wrangler publish"
-  }
+    "name": "url-shortener",
+    "version": "0.0.0",
+    "devDependencies": {
+        "wrangler": "2.8.1"
+    },
+    "private": true,
+    "scripts": {
+        "start": "wrangler dev",
+        "deploy": "wrangler publish"
+    }
 }

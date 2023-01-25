@@ -1,16 +1,22 @@
 <!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/styles.css">
+</head>
 <body>
-    <h2>Admin panel</h2>
-    <form>
-        <label for="name">Shortlink name:</label><br>
-        <input type="text" id="name" name="name"><br>
-
-        <label for="target">Shortlink target URL:</label><br>
-        <input type="url" id="target" name="target"><br><br>
-
-        <input type="submit" value="Add shortlink">
-    </form>
-    <p></p>
+    <div class="centered">
+        <h2>Admin panel</h2>
+        <form>
+            <label for="name">Shortlink name</label><br>
+            <input type="text" id="name" name="name"><br><br>
+    
+            <label for="target">Shortlink target URL</label><br>
+            <input type="url" id="target" name="target"><br><br>
+    
+            <input type="submit" value="Add shortlink">
+        </form>
+        <p></p>
+    </div>
     <script>
         function handleSubmit(event) {
             event.preventDefault()
