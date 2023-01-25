@@ -43,7 +43,7 @@ export default {
 						})
 					}
 				
-					// index
+				// index
 				case "/":
 					{
 						return new Response(indexHTML, {
@@ -138,6 +138,9 @@ export default {
 								}
 	
 								let temp = await env.DB.get("redirect-mapping", { type: "json" })
+								if (!temp[body.name]) {
+									return new Response("Shortname not found", { status: 404 })
+								}
 								delete temp[body.name]
 								await env.DB.put("redirect-mapping", JSON.stringify(temp))
 	

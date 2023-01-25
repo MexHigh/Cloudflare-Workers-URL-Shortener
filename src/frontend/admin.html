@@ -4,18 +4,31 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <div class="centered">
+    <div class="text-centered">
         <h2>Admin panel</h2>
-        <form>
-            <label for="name">Shortlink name</label><br>
+        <h3>Current shortlinks</h3>
+        <table class="div-centered">
+            <thead>
+                <tr>
+                    <th>Short name</th>
+                    <th>Target URL</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="shortlinkList"></tbody>
+        </table>
+        <br>
+        <h3>Add new shortlink</h3>
+        <form id="form">
+            <label for="name">Name</label><br>
             <input type="text" id="name" name="name"><br><br>
     
-            <label for="target">Shortlink target URL</label><br>
+            <label for="target">Target URL</label><br>
             <input type="url" id="target" name="target"><br><br>
     
             <input type="submit" value="Add shortlink">
         </form>
-        <p></p>
+        <p id="errMsg"></p>
     </div>
     <script>
         function getUrlShortenerToken() {
@@ -24,17 +37,16 @@
             if (parts.length === 2) return parts.pop().split(";").shift() 
         }
 
+        let token = getUrlShortenerToken()
+        let resMsg = document.querySelector("#errMsg")
+        if (!token) {
+            resMsg.innerHTML = "Unable to retrieve token from cookie, please go to /admin/login"
+        }
+
         function handleSubmit(event) {
             event.preventDefault()
             let data = new FormData(event.target)
             let values = Object.fromEntries(data.entries())
-
-            let resMsg = document.querySelector("p")
-            let token = getUrlShortenerToken()
-            if (!token) {
-                resMsg.innerHTML = "Unable to retrieve token from cookie, please go to /admin/login"
-                return false
-            }
 
             fetch("/api/shortlink", {
                 method: "POST",
@@ -47,9 +59,69 @@
                 })
             }).then(async (r) => {
                 resMsg.innerHTML = await r.text()
+                setTimeout(() => {
+                    window.location.reload()
+                }, 1000)
             })
         }
-        let form = document.querySelector("form");
+        let form = document.querySelector("#form");
         form.addEventListener("submit", handleSubmit);
+
+        function handleDeleteClick(event) {
+            event.preventDefault()
+            fetch("/api/shortlink", {
+                method: "DELETE",
+                headers: {
+                    "x-api-key": token
+                },
+                body: JSON.stringify({
+                    "name": event.target.value
+                })
+            }).then(r => {
+                setTimeout(() => {
+                    window.location.reload()
+                }, 1000)
+            })
+        }
+
+        let shortlinks = document.querySelector("#shortlinkList")
+        fetch("/api/shortlink", {
+            method: "GET",
+            headers: {
+                "x-api-key": token
+            }
+        })
+            .then(r => r.json())
+            .then(r => {
+                for (const [key, value] of Object.entries(r)) {
+                    let tr = document.createElement("tr")
+
+                    let tdLeft = document.createElement("td")
+                    let tdLeftLink = document.createElement("a")
+                    tdLeftLink.href = "/" + key
+                    tdLeftLink.innerHTML = key
+                    tdLeft.appendChild(tdLeftLink)
+                    
+                    let tdRight = document.createElement("td")
+                    let tdRightLink = document.createElement("a")
+                    tdRightLink.href = value
+                    tdRightLink.innerHTML = value
+                    tdRight.appendChild(tdRightLink)
+
+                    let tdDelete = document.createElement("td")
+                    let deleteButton = document.createElement("button")
+                    deleteButton.addEventListener("click", handleDeleteClick)
+                    deleteButton.innerHTML = "Delete"
+                    deleteButton.value = key
+                    tdDelete.appendChild(deleteButton)
+
+                    tr.appendChild(tdLeft)
+                    tr.appendChild(tdRight)
+                    tr.appendChild(tdDelete)
+
+                    shortlinks.appendChild(tr)
+                }
+            })
+
     </script>
 </body>

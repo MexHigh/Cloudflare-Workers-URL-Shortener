@@ -1,3 +1,25 @@
-.centered {
+.text-centered {
     text-align: center;
+}
+
+.div-centered {
+    width: fit-content;
+    margin: auto;
+}
+
+table {
+    text-align: left;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid;
+}
+
+th, td {
+    padding-top: 4px;
+    padding-bottom: 4px;
+
+    padding-left: 8px;
+    padding-right: 8px;
 }

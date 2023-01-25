@@ -4,14 +4,14 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <div class="centered">
+    <div class="text-centered">
         <h2>Login</h2>
         <form>
             <label for="auth">Admin token</label><br>
             <input type="text" id="auth" name="auth"><br><br>
             <input type="submit" value="Login">
         </form>
-        <p></p>
+        <p id="errMsg"></p>
     </div>
     <script>
         function handleSubmit(event) {
@@ -27,7 +27,7 @@
                     document.cookie = `url-shortener-token=${authToken}; Secure`
                     window.location = "/admin"
                 } else {
-                    let errMsg = document.querySelector("p")
+                    let errMsg = document.querySelector("#errMsg")
                     errMsg.innerHTML = await r.text()
                     setTimeout(() => {
                         errMsg.innerHTML = ""
