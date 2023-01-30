@@ -13,6 +13,10 @@ function getCookieValue(cookies, name) {
 	if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
+function isValidShortname(inShortname) {
+	return inShortname.match(/^[a-zA-Z][a-zA-Z0-9-]+$/g)
+}
+
 function isValidHttpUrl(inURL) {
 	let url
 	try {
@@ -20,7 +24,7 @@ function isValidHttpUrl(inURL) {
 	} catch {
 		return false
 	}
-	return url.protocol === "http:" || url.protocol === "https:"
+	return url.protocol === "http:" || url.protocol === "https:" || url.protocol === "ts3server:"
 }
 
 function getTokenFromCookieOrHeader(request) {
@@ -159,6 +163,9 @@ export default {
 								let body = await request.json()
 								if (!body.name || !body.target) {
 									return new Response("\"name\" or \"target\" is empty", { status: 400 })
+								}
+								if (!isValidShortname(body.name)) {
+									return new Response("\"name\" contains illegal characters", { status: 400 })
 								}
 								if (!isValidHttpUrl(body.target)) {
 									return new Response("\"target\" is not an URL", { status: 400 })

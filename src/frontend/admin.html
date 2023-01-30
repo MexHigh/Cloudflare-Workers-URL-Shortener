@@ -70,9 +70,14 @@
             }).then(async (r) => {
                 let resMsg = document.querySelector("#errMsg")
                 resMsg.innerHTML = await r.text()
-                setTimeout(() => {
-                    window.location.reload()
-                }, 1000)
+                if (r.ok) {
+                    setTimeout(() => {
+                        event.submitter.removeAttribute("aria-busy")
+                        window.location.reload()
+                    }, 1000)
+                } else {
+                    event.submitter.removeAttribute("aria-busy")
+                }
             })
         }
         let form = document.querySelector("#form");
