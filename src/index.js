@@ -178,7 +178,7 @@ export default {
 			}
 			const targetURL = redirectMapping[shortlinkName]
 
-			return Response.redirect(targetURL, 302)
+			return Response.redirect(targetURL, 307)
 
 		} catch (err) {
 			return new Response(err.stack, { status: 500 })
