@@ -4,6 +4,9 @@ import adminLoginHTML from "./frontend/admin_login.html"
 import s404 from "./frontend/404.html"
 import css from "./frontend/styles.css"
 
+const cookieName = "url-shortener-token"
+const cookieAppendices = "Path=/; Secure; HttpOnly; SameSite=Strict"
+
 function getCookieValue(cookies, name) {
 	const value = `; ${cookies}`;
 	const parts = value.split(`; ${name}=`);
@@ -18,6 +21,14 @@ function isValidHttpUrl(inURL) {
 		return false
 	}
 	return url.protocol === "http:" || url.protocol === "https:"
+}
+
+function getTokenFromCookieOrHeader(request) {
+	let cookies = request.headers.get("Cookie")
+	if (cookies) {
+		return getCookieValue(cookies, cookieName) || null
+	}
+	return request.headers.get("x-api-key") || null
 }
 
 export default {
@@ -53,20 +64,17 @@ export default {
 					}
 
 				// admin page
-				case "/admin": 
+				case "/admin":
 					{
 						let cookies = headers.get("Cookie")
 						if (!cookies) {
 							return Response.redirect(protocol + "//" + host + "/admin/login")
 						}
-						let token = getCookieValue(cookies, "url-shortener-token")
-						if (!token) {
+						let token = getCookieValue(cookies, cookieName)
+						if (!token || !await authOk(token)) {
 							return Response.redirect(protocol + "//" + host + "/admin/login")
 						}
-						if (!await authOk(token)) {
-							return Response.redirect(protocol + "//" + host + "/admin/login")
-						}
-	
+
 						return new Response(adminHTML, {
 							headers: { "content-type": "text/html;charset=UTF-8" }
 						})
@@ -75,26 +83,50 @@ export default {
 				case "/admin/login":
 					{
 						let cookies = headers.get("Cookie")
-						let token = getCookieValue(cookies, "url-shortener-token")
+						let token = getCookieValue(cookies, cookieName)
 						if (token && await authOk(token)) {
 							return Response.redirect(protocol + "//" + host + "/admin")
 						}
 
 						return new Response(adminLoginHTML, {
-							headers: { "content-type": "text/html;charset=UTF-8" }
+							headers: { 
+								"content-type": "text/html;charset=UTF-8",
+								"set-cookie": `${cookieName}=; ${cookieAppendices}; Max-Age=0`
+							}
 						})
 					}
 
-				case "/api/auth-ok":
+				case "/api/login":
 					{
 						if (method != "GET") {
 							return new Response("Method not allowed", { status: 405 })
 						}
-						let token = headers.get("x-api-key")
-						if (await authOk(token)) {
-							return new Response("Ok", { status: 200 })
+
+						let token = getTokenFromCookieOrHeader(request)
+						if (!token || !await authOk(token)) {
+							return new Response("Unauthorized", { status: 401 })
 						}
-						return new Response("Unauthorized", { status: 401 })
+
+						return new Response("Ok", { 
+							status: 200,
+							headers: {
+								"set-cookie": `${cookieName}=${token}; ${cookieAppendices}`
+							}
+						})
+					}
+				
+				case "/api/logout":
+					{
+						if (method != "GET") {
+							return new Response("Method not allowed", { status: 405 })
+						}
+
+						return new Response("Ok", { 
+							status: 200,
+							headers: {
+								"set-cookie": `${cookieName}=; ${cookieAppendices}; Max-Age=0`
+							}
+						})
 					}
 
 				case "/api/shortlink":
@@ -103,11 +135,13 @@ export default {
 						case "GET":
 						case "POST":
 						case "DELETE":
-							let token = headers.get("x-api-key")
-							if (!await authOk(token)) {
-								return new Response("Unauthorized", { status: 401 })
+							{
+								let token = getTokenFromCookieOrHeader(request)
+								if (!token || !await authOk(token)) {
+									return new Response("Unauthorized", { status: 401 })
+								}
+								break
 							}
-							break
 						default:
 							return new Response("Method not allowed", { status: 405 })
 					}

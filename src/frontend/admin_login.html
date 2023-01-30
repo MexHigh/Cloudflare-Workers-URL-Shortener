@@ -23,14 +23,14 @@
             event.submitter.setAttribute("aria-busy", "true")
 
             let authToken = document.querySelector("#auth").value
-            fetch("/api/auth-ok", {
+            fetch("/api/login", {
                 method: "GET",
                 headers: {
                     "x-api-key": authToken
                 }
             }).then(async (r) => {
                 if (r.ok) {
-                    document.cookie = `url-shortener-token=${authToken}; Secure`
+                    //document.cookie = `url-shortener-token=${authToken}; Path=/; Secure;`
                     window.location = "/admin"
                 } else {
                     event.submitter.removeAttribute("aria-busy")

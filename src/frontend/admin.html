@@ -6,50 +6,52 @@
 </head>
 <body>
     <main class="container">
-        <div>
-            <h2>Admin panel</h2>
+        <h2>Admin panel</h2>
+
+        <h3>Add new shortlink</h3>
+        <form id="form" autocomplete="off">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name">
     
-            <h3>Add new shortlink</h3>
-            <form id="form" autocomplete="off">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name">
+            <label for="target">Target URL</label>
+            <input type="url" id="target" name="target">
+    
+            <button type="submit">Add shortlink</button>
+        </form>
+        <p id="errMsg"></p>
         
-                <label for="target">Target URL</label>
-                <input type="url" id="target" name="target">
-        
-                <button type="submit">Add shortlink</button>
-            </form>
-            <p id="errMsg"></p>
-            
-            <h3>Current shortlinks</h3>
-            <figure>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Short name</th>
-                            <th>Target URL</th>
-                            <th>&nbsp;</th>
-                        </tr>
-                    </thead>
-                    <tbody id="shortlinkList">
-                        <!-- Populated by JS -->
-                    </tbody>
-                </table>
-            </figure>
-        </div>
+        <h3>Current shortlinks</h3>
+        <figure>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Short name</th>
+                        <th>Target URL</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody id="shortlinkList">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </figure>
+
+        <br>
+
+        <button id="logoutButton" class="secondary">Logout</button>
     </main>
     <script>
-        function getUrlShortenerToken() {
-            let cookies = `; ${document.cookie}`;
-            let parts = cookies.split(`; url-shortener-token=`)
-            if (parts.length === 2) return parts.pop().split(";").shift() 
-        }
+        function handleLogout(event) {
+            event.preventDefault()
 
-        let token = getUrlShortenerToken()
-        let resMsg = document.querySelector("#errMsg")
-        if (!token) {
-            resMsg.innerHTML = "Unable to retrieve token from cookie, please go to /admin/login"
+            fetch("/api/logout", {
+                method: "GET"
+            }).then(r => {
+                window.location = "/admin/login"
+            })
         }
+        let logoutButton = document.querySelector("#logoutButton")
+        logoutButton.addEventListener("click", handleLogout)
 
         function handleSubmit(event) {
             event.preventDefault()
@@ -61,14 +63,12 @@
 
             fetch("/api/shortlink", {
                 method: "POST",
-                headers: {
-                    "x-api-key": token
-                },
                 body: JSON.stringify({
                     "name": values.name,
                     "target": values.target
                 })
             }).then(async (r) => {
+                let resMsg = document.querySelector("#errMsg")
                 resMsg.innerHTML = await r.text()
                 setTimeout(() => {
                     window.location.reload()
@@ -85,9 +85,6 @@
             
             fetch("/api/shortlink", {
                 method: "DELETE",
-                headers: {
-                    "x-api-key": token
-                },
                 body: JSON.stringify({
                     "name": event.target.value
                 })
@@ -101,10 +98,7 @@
 
         let shortlinks = document.querySelector("#shortlinkList")
         fetch("/api/shortlink", {
-            method: "GET",
-            headers: {
-                "x-api-key": token
-            }
+            method: "GET"
         })
             .then(r => r.json())
             .then(r => {
