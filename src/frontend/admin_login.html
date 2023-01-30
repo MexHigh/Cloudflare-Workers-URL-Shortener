@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <head>
+    <title>leon.wtf URL shortener</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <div class="text-centered">
-        <h2>Login</h2>
-        <form autocomplete="off">
-            <label for="auth">Admin token</label><br>
-            <input type="password" id="auth" name="auth"><br><br>
-            <input type="submit" value="Login">
-        </form>
-        <p id="errMsg"></p>
-    </div>
+    <main class="container">
+        <div>
+            <h2>Login</h2>
+            <form autocomplete="off">
+                <label for="auth">Admin token</label>
+                <input type="password" id="auth" name="auth">
+                <button type="submit">Login</button>
+            </form>
+            <p id="errMsg"></p>
+        </div>
+    </main>
     <script>
         function handleSubmit(event) {
             event.preventDefault()
-            let authToken = document.getElementById("auth").value
+
+            event.submitter.setAttribute("aria-busy", "true")
+
+            let authToken = document.querySelector("#auth").value
             fetch("/api/auth-ok", {
                 method: "GET",
                 headers: {
@@ -27,6 +33,7 @@
                     document.cookie = `url-shortener-token=${authToken}; Secure`
                     window.location = "/admin"
                 } else {
+                    event.submitter.removeAttribute("aria-busy")
                     let errMsg = document.querySelector("#errMsg")
                     errMsg.innerHTML = await r.text()
                     setTimeout(() => {

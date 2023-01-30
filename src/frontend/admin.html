@@ -1,38 +1,43 @@
 <!DOCTYPE html>
 <head>
+    <title>leon.wtf URL shortener</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <div class="text-centered">
-        <h2>Admin panel</h2>
-
-        <h3>Add new shortlink</h3>
-        <form id="form" autocomplete="off">
-            <label for="name">Name</label><br>
-            <input type="text" id="name" name="name"><br><br>
+    <main class="container">
+        <div>
+            <h2>Admin panel</h2>
     
-            <label for="target">Target URL</label><br>
-            <input type="url" id="target" name="target"><br><br>
-    
-            <input type="submit" value="Add shortlink">
-        </form>
-        <p id="errMsg"></p>
+            <h3>Add new shortlink</h3>
+            <form id="form" autocomplete="off">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name">
         
-        <br>
+                <label for="target">Target URL</label>
+                <input type="url" id="target" name="target">
         
-        <h3>Current shortlinks</h3>
-        <table class="div-centered table">
-            <thead>
-                <tr>
-                    <th>Short name</th>
-                    <th>Target URL</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody id="shortlinkList"></tbody>
-        </table>
-    </div>
+                <button type="submit">Add shortlink</button>
+            </form>
+            <p id="errMsg"></p>
+            
+            <h3>Current shortlinks</h3>
+            <figure>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Short name</th>
+                            <th>Target URL</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody id="shortlinkList">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </figure>
+        </div>
+    </main>
     <script>
         function getUrlShortenerToken() {
             let cookies = `; ${document.cookie}`;
@@ -48,6 +53,9 @@
 
         function handleSubmit(event) {
             event.preventDefault()
+
+            event.submitter.setAttribute("aria-busy", "true")
+
             let data = new FormData(event.target)
             let values = Object.fromEntries(data.entries())
 
@@ -72,6 +80,9 @@
 
         function handleDeleteClick(event) {
             event.preventDefault()
+
+            event.target.setAttribute("aria-busy", "true")
+            
             fetch("/api/shortlink", {
                 method: "DELETE",
                 headers: {
@@ -81,6 +92,7 @@
                     "name": event.target.value
                 })
             }).then(r => {
+                event.target.setAttribute("aria-busy", "true")
                 setTimeout(() => {
                     window.location.reload()
                 }, 1000)
@@ -112,9 +124,10 @@
                     tdRight.appendChild(tdRightLink)
 
                     let tdDelete = document.createElement("td")
-                    let deleteButton = document.createElement("button")
+                    let deleteButton = document.createElement("a") // no href, just a button
                     deleteButton.addEventListener("click", handleDeleteClick)
                     deleteButton.innerHTML = "Delete"
+                    deleteButton.style = "color: red; cursor: pointer;"
                     deleteButton.value = key
                     tdDelete.appendChild(deleteButton)
 
