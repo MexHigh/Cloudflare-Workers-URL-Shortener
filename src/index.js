@@ -1,7 +1,7 @@
 import indexHTML from "./frontend/index.html"
 import adminHTML from "./frontend/admin.html"
 import adminLoginHTML from "./frontend/admin_login.html"
-import s404 from "./frontend/404.html"
+import notFoundHTML from "./frontend/404.html"
 import picoCSS from "./frontend/pico.min.css"
 
 const cookieName = "url-shortener-token"
@@ -203,7 +203,7 @@ export default {
 
 			const pathnameParts = pathname.split("/")
 			if (pathnameParts.length > 2 && pathnameParts[2] !== "") {
-				return new Response(s404, { 
+				return new Response(notFoundHTML, { 
 					status: 404, 
 					headers: {"content-type": "text/html;charset=UTF-8" }
 				})
@@ -212,7 +212,7 @@ export default {
 
 			const redirectMapping = await env.DB.get("redirect-mapping", { type: "json" })
 			if (!redirectMapping.hasOwnProperty(shortlinkName)) {
-				return new Response(s404, { 
+				return new Response(notFoundHTML, { 
 					status: 404, 
 					headers: {"content-type": "text/html;charset=UTF-8" }
 				})
