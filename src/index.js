@@ -1,6 +1,7 @@
 import indexHTML from "./frontend/index.html"
 import adminHTML from "./frontend/admin.html"
 import adminLoginHTML from "./frontend/admin_login.html"
+import s404 from "./frontend/404.html"
 import css from "./frontend/styles.css"
 
 function getCookieValue(cookies, name) {
@@ -161,13 +162,19 @@ export default {
 
 			const pathnameParts = pathname.split("/")
 			if (pathnameParts.length > 2 && pathnameParts[2] !== "") {
-				return new Response("Short link not found (incorrect path depth)", { status: 404 })
+				return new Response(s404, { 
+					status: 404, 
+					headers: {"content-type": "text/html;charset=UTF-8" }
+				})
 			}
 			const shortlinkName = pathnameParts[1].replace("/", "")
 
 			const redirectMapping = await env.DB.get("redirect-mapping", { type: "json" })
 			if (!redirectMapping.hasOwnProperty(shortlinkName)) {
-				return new Response("Short link not found", { status: 404 })
+				return new Response(s404, { 
+					status: 404, 
+					headers: {"content-type": "text/html;charset=UTF-8" }
+				})
 			}
 			const targetURL = redirectMapping[shortlinkName]
 
