@@ -2,7 +2,7 @@ import indexHTML from "./frontend/index.html"
 import adminHTML from "./frontend/admin.html"
 import adminLoginHTML from "./frontend/admin_login.html"
 import s404 from "./frontend/404.html"
-import css from "./frontend/styles.css"
+import picoCSS from "./frontend/pico.min.css"
 
 const cookieName = "url-shortener-token"
 const cookieAppendices = "Path=/; Secure; HttpOnly; SameSite=Strict"
@@ -52,9 +52,9 @@ export default {
 
 			switch (pathname) {
 				// styles CSS file
-				case "/styles.css":
+				case "/pico.min.css":
 					{
-						return new Response(css, {
+						return new Response(picoCSS, {
 							headers: { "content-type": "text/css;charset=UTF-8" }
 						})
 					}
