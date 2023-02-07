@@ -1,0 +1,29 @@
+{
+    "manifest_version": 3,
+    "name": "Cloudflare Workers URL Shortener Plugin",
+    "short_name": "URL Shortener",
+    "version": "1.0.0",
+    "author": "mail@leon-schmidt.dev",
+    "homepage_url": "https://leon-schmidt.dev",
+
+    "action": {
+        "default_title": "Click Me",
+        "default_popup": "popup.html"
+    },
+
+    "options_ui": {
+        "page": "options.html",
+        "open_in_tab": false
+    },
+
+    "permissions": [
+        "activeTab",
+        "storage"
+    ],
+
+    "commands": {
+        "create-shortlink": {
+            "description": "Create shortlink from current tab"
+        }
+    }
+}
