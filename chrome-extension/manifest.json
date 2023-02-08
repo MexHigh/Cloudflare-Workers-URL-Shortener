@@ -6,13 +6,7 @@
     "author": "mail@leon-schmidt.dev",
     "homepage_url": "https://leon-schmidt.dev",
 
-    "background": {
-        "service_worker": "background.js",
-        "type": "module"
-    },
-
     "action": {
-        "default_title": "Click Me",
         "default_popup": "popup.html"
     },
 

@@ -42,15 +42,17 @@ async function handleSubmit(event) {
 
 // show banner if extension is unconfigured
 if (!storage["server-host"] || !storage["admin-token"]) {
-    unconfiguredBanner.hidden = false
-    shortnameInput.disabled = true
-    submitButton.disabled = true
-
     // set click listener for option page link
     document.querySelector("#toOptionsPage")?.addEventListener("click", (event) => {
         event.preventDefault()
         chrome.runtime.openOptionsPage()
     })
+    
+    unconfiguredBanner.hidden = false
+    shortnameInput.disabled = true
+    submitButton.disabled = true
+    toAdminPage.hidden = true
+
 } else {
     // set admin page link
     toAdminPage.href = `https://${storage["server-host"]}/admin`
