@@ -1,1 +1,22 @@
 <!DOCTYPE html>
+<html>
+    <head>
+        <title>Cloudflare Workers URL Shortener: Options</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <main>
+            <form>
+                <label for="server-host">Server (hostname only)</label><br>
+                <input id="server-host" type="text"><br>
+
+                <label for="admin-token">Admin token</label><br>
+                <input id="admin-token" type="text"><br>
+
+                <button type="submit">Save</button>
+            </form>
+        </main>
+        <script src="options.js" type="module"></script>
+    </body>
+</html>
