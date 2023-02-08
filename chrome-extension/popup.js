@@ -1,22 +1,20 @@
 async function handleSubmit(event) {
     event.preventDefault()
     
-    let shortname = document.querySelector("#shortname").value
+    let shortname = document.querySelector("#shortname")?.value
     
     // get option values from local storage
     // TODO, redirect to option page, if any of them is null
-    let serverHost = await chrome.storage.local.get(["server-host"])
-    let authToken = await chrome.storage.local.get(["admin-token"])
+    let storage = await chrome.storage.local.get(["server-host", "admin-token"])
 
     // get current URL
     let [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true })
     let currentURL = tab.url
 
-    fetch(`https://${serverHost}/api/shortlink`, {
+    fetch(`https://${storage["server-host"]}/api/shortlink`, {
         method: "POST",
-        mode: "no-cors",
         headers: {
-            "x-api-key": authToken
+            "x-api-key": storage["admin-token"]
         },
         body: JSON.stringify({
             "name": shortname,
@@ -32,4 +30,4 @@ async function handleSubmit(event) {
 }
 
 let form = document.querySelector("form")
-form.addEventListener("submit", handleSubmit)
+form?.addEventListener("submit", handleSubmit)

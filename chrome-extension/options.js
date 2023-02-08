@@ -3,13 +3,12 @@ function handleSubmit(event) {
 
     event.submitter.setAttribute("aria-busy", "true")
     
-    let serverHost = document.querySelector("#server-host").value
-    let adminToken = document.querySelector("#admin-token").value
+    let serverHost = document.querySelector("#server-host")?.value
+    let adminToken = document.querySelector("#admin-token")?.value
 
     // check token
-    fetch(`https://${serverHost}/api/login`, {
+    fetch(`https://${serverHost}/api/auth-ok`, {
         method: "GET",
-        mode: "no-cors",
         headers: {
             "x-api-key": adminToken
         }
@@ -34,4 +33,4 @@ function handleSubmit(event) {
 }
 
 let form = document.querySelector("form")
-form.addEventListener("submit", handleSubmit)
+form?.addEventListener("submit", handleSubmit)
