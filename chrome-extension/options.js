@@ -33,6 +33,7 @@ function handleSubmit(event) {
             errMsg.innerHTML = await r.text()
         }
     }).catch((e) => {
+        event.submitter.removeAttribute("aria-busy")
         errMsg.innerHTML = e.message
     })
 }
