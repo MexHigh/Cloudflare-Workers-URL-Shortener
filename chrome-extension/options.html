@@ -4,15 +4,18 @@
         <title>Cloudflare Workers URL Shortener: Options</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/pico.min.css">
     </head>
     <body>
-        <main>
+        <main class="container">
             <form>
-                <label for="server-host">Server (hostname only)</label><br>
-                <input id="server-host" type="text"><br>
+                <h4>Configuration</h4>
 
-                <label for="admin-token">Admin token</label><br>
-                <input id="admin-token" type="text"><br>
+                <label for="server-host">Server (hostname only)</label>
+                <input id="server-host" type="text">
+
+                <label for="admin-token">Admin token</label>
+                <input id="admin-token" type="text">
 
                 <button type="submit">Save</button>
             </form>

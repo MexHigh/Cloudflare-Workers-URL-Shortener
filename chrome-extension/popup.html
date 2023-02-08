@@ -4,13 +4,15 @@
         <title>Cloudflare Workers URL Shortener</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="pico.min.css">
     </head>
     <body>
-        <main>
+        <main class="container" style="min-width: 300px;">
+            <h4>Shorten current URL</h4>
             <!-- TODO Link to admin page -->
             <form>
-                <label for="shortname">Shortname</label><br>
-                <input id="shortname" type="text"><br>
+                <label for="shortname">Shortname</label>
+                <input id="shortname" type="text">
 
                 <button type="submit">Shorten current URL</button>
 
