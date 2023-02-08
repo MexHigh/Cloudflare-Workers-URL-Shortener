@@ -7,6 +7,18 @@ import picoCSS from "./frontend/pico.min.css"
 const cookieName = "url-shortener-token"
 const cookieAppendices = "Path=/; Secure; HttpOnly; SameSite=Strict"
 
+const corsHeaders = { 
+	"access-control-allow-origin": "*",
+	"access-control-allow-headers": "x-api-key"
+}
+const corsResponse = (allowedMethods) => {
+	return new Response(null, { status: 200, headers: {
+			"Allow": allowedMethods,
+			...corsHeaders
+		}
+	})
+}
+
 function getCookieValue(cookies, name) {
 	const value = `; ${cookies}`;
 	const parts = value.split(`; ${name}=`);
@@ -100,35 +112,66 @@ export default {
 						})
 					}
 
-				case "/api/login":
+				case "/api/auth-ok":
 					{
-						if (method != "GET") {
-							return new Response("Method not allowed", { status: 405 })
+						if (method === "OPTIONS") {
+							return corsResponse("GET")
+						}
+
+						if (method !== "GET") {
+							return new Response("Method not allowed", { status: 405, headers: corsHeaders })
 						}
 
 						let token = getTokenFromCookieOrHeader(request)
 						if (!token || !await authOk(token)) {
-							return new Response("Unauthorized", { status: 401 })
+							return new Response("Unauthorized", { status: 401, headers: corsHeaders })
+						}
+
+						return new Response("Ok", { 
+							status: 200,
+							headers: corsHeaders
+						})
+					}
+
+				case "/api/login":
+					{
+						if (method === "OPTIONS") {
+							return corsResponse("GET")
+						}
+
+						if (method !== "GET") {
+							return new Response("Method not allowed", { status: 405, headers: corsHeaders })
+						}
+
+						let token = getTokenFromCookieOrHeader(request)
+						if (!token || !await authOk(token)) {
+							return new Response("Unauthorized", { status: 401, headers: corsHeaders })
 						}
 
 						return new Response("Ok", { 
 							status: 200,
 							headers: {
-								"set-cookie": `${cookieName}=${token}; ${cookieAppendices}`
+								"set-cookie": `${cookieName}=${token}; ${cookieAppendices}`,
+								...corsHeaders
 							}
 						})
 					}
 				
 				case "/api/logout":
 					{
-						if (method != "GET") {
-							return new Response("Method not allowed", { status: 405 })
+						if (method === "OPTIONS") {
+							return corsResponse("GET")
+						}
+
+						if (method !== "GET") {
+							return new Response("Method not allowed", { status: 405, headers: corsHeaders })
 						}
 
 						return new Response("Ok", { 
 							status: 200,
 							headers: {
-								"set-cookie": `${cookieName}=; ${cookieAppendices}; Max-Age=0`
+								"set-cookie": `${cookieName}=; ${cookieAppendices}; Max-Age=0`,
+								...corsHeaders
 							}
 						})
 					}
@@ -142,12 +185,14 @@ export default {
 							{
 								let token = getTokenFromCookieOrHeader(request)
 								if (!token || !await authOk(token)) {
-									return new Response("Unauthorized", { status: 401 })
+									return new Response("Unauthorized", { status: 401, headers: corsHeaders })
 								}
 								break
 							}
+						case "OPTIONS":
+							return corsResponse("GET, POST, DELETE")
 						default:
-							return new Response("Method not allowed", { status: 405 })
+							return new Response("Method not allowed", { status: 405, headers: corsHeaders })
 					}
 
 					// routes
@@ -155,44 +200,50 @@ export default {
 						case "GET":
 							{
 								let redirectMapping = await env.DB.get("redirect-mapping", { type: "json" })
-								return Response.json(redirectMapping)
+								return new Response(JSON.stringify(redirectMapping), {
+									status: 200,
+									headers: {
+										"content-type": "application/json", 
+										...corsHeaders
+									}
+								})
 							}
 
 						case "POST": 
 							{
 								let body = await request.json()
 								if (!body.name || !body.target) {
-									return new Response("\"name\" or \"target\" is empty", { status: 400 })
+									return new Response("\"name\" or \"target\" is empty", { status: 400, headers: corsHeaders })
 								}
 								if (!isValidShortname(body.name)) {
-									return new Response("\"name\" contains illegal characters", { status: 400 })
+									return new Response("\"name\" contains illegal characters", { status: 400, headers: corsHeaders })
 								}
 								if (!isValidHttpUrl(body.target)) {
-									return new Response("\"target\" is not an URL", { status: 400 })
+									return new Response("\"target\" is not an URL", { status: 400, headers: corsHeaders })
 								}
 	
 								let temp = await env.DB.get("redirect-mapping", { type: "json" })
 								temp[body.name] = body.target
 								await env.DB.put("redirect-mapping", JSON.stringify(temp))
 	
-								return new Response("Ok", { status: 201 })
+								return new Response("Ok", { status: 201, headers: corsHeaders })
 							}
 
 						case "DELETE":
 							{
 								let body = await request.json()
 								if (body.name === undefined) {
-									return new Response("\"name\" is empty", { status: 400 })
+									return new Response("\"name\" is empty", { status: 400, headers: corsHeaders })
 								}
 	
 								let temp = await env.DB.get("redirect-mapping", { type: "json" })
 								if (!temp[body.name]) {
-									return new Response("Shortname not found", { status: 404 })
+									return new Response("Shortname not found", { status: 404, headers: corsHeaders })
 								}
 								delete temp[body.name]
 								await env.DB.put("redirect-mapping", JSON.stringify(temp))
 	
-								return new Response("Ok", { status: 200 })
+								return new Response("Ok", { status: 200, headers: corsHeaders })
 							}
 					}
 			}
