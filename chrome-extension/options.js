@@ -1,5 +1,7 @@
 function handleSubmit(event) {
     event.preventDefault()
+
+    event.submitter.setAttribute("aria-busy", "true")
     
     let serverHost = document.querySelector("#server-host").value
     let adminToken = document.querySelector("#admin-token").value
@@ -22,6 +24,8 @@ function handleSubmit(event) {
             chrome.storage.local.set({ "server-host": serverHost }).then(() => {
                 console.log("Server host saved successfully")
             })
+
+            event.submitter.removeAttribute("aria-busy")
         } else {
             console.log("Wrong credentials")
             // TODO richtige GUI dafür machen
