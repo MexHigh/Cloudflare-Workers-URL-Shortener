@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Cloudflare Workers URL Shortener</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="pico.min.css">
+    </head>
+    <body>
+        <main class="container" style="min-width: 300px;">
+            <hgroup>
+                <h4>Shorten current URL</h4>
+                <a id="toAdminPage" target="_blank">Admin page</a>
+            </hgroup>
+            <article id="unconfiguredBanner" hidden>
+                <header>Extension is unconfigured!</header>
+                Please configure the extension <a id="toOptionsPage">here</a>!
+            </article>
+            <form>
+                <label for="shortname">Shortname</label>
+                <input id="shortname" type="text">
+                
+                <button id="submit" type="submit">Shorten current URL</button>
+            </form>
+            <p id="errMsg"></p>
+            
+        </main>
+        <script src="popup.js" type="module" defer></script>
+    </body>
+</html>

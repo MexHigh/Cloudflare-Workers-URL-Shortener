@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Cloudflare Workers URL Shortener: Options</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/pico.min.css">
+    </head>
+    <body>
+        <main class="container">
+            <form>
+                <h4>Configuration</h4>
+
+                <label for="server-host">Server (hostname only)</label>
+                <input id="server-host" type="text">
+
+                <label for="admin-token">Admin token</label>
+                <input id="admin-token" type="text">
+
+                <button type="submit">Save</button>
+            </form>
+            <p id="errMsg"></p>
+        </main>
+        <script src="options.js" type="module"></script>
+    </body>
+</html>
