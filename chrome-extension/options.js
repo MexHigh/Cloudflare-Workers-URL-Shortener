@@ -6,13 +6,15 @@ function handleSubmit(event) {
     let serverHost = document.querySelector("#server-host")?.value
     let adminToken = document.querySelector("#admin-token")?.value
 
+    let errMsg = document.querySelector("#errMsg")
+
     // check token
     fetch(`https://${serverHost}/api/auth-ok`, {
         method: "GET",
         headers: {
             "x-api-key": adminToken
         }
-    }).then((r) => {
+    }).then(async (r) => {
         if (r.ok) {
             // store correct token
             chrome.storage.local.set({ "admin-token": adminToken }).then(() => {
@@ -25,10 +27,13 @@ function handleSubmit(event) {
             })
 
             event.submitter.removeAttribute("aria-busy")
+            errMsg.innerHTML = "Success, you may close this window now!"
         } else {
-            console.log("Wrong credentials")
-            // TODO richtige GUI dafür machen
+            event.submitter.removeAttribute("aria-busy")
+            errMsg.innerHTML = await r.text()
         }
+    }).catch((e) => {
+        errMsg.innerHTML = e.message
     })
 }
 
