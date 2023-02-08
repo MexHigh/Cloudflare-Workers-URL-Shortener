@@ -8,17 +8,23 @@
     </head>
     <body>
         <main class="container" style="min-width: 300px;">
-            <h4>Shorten current URL</h4>
-            <!-- TODO Link to admin page -->
+            <hgroup>
+                <h4>Shorten current URL</h4>
+                <a id="toAdminPage" target="_blank">Admin page</a>
+            </hgroup>
+            <article id="unconfiguredBanner" hidden>
+                <header>Extension is unconfigured!</header>
+                Please configure the extension <a id="toOptionsPage">here</a>!
+            </article>
             <form>
                 <label for="shortname">Shortname</label>
                 <input id="shortname" type="text">
-
-                <button type="submit">Shorten current URL</button>
-
-                <!-- TODO Result with copy button -->
+                
+                <button id="submit" type="submit">Shorten current URL</button>
             </form>
+            <p id="errMsg"></p>
+            
         </main>
-        <script src="popup.js" type="module"></script>
+        <script src="popup.js" type="module" defer></script>
     </body>
 </html>
