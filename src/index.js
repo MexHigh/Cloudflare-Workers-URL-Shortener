@@ -115,7 +115,7 @@ export default {
 						return new Response(adminLoginHTML, {
 							headers: { 
 								"content-type": "text/html;charset=UTF-8",
-								"set-cookie": `${cookieName}=; ${cookieAppendices}; Max-Age=0`
+								"set-cookie": `${cookieName}=; ${cookieAppendices}; Domain=.${host}; Max-Age=0`
 							}
 						})
 					}
@@ -159,7 +159,7 @@ export default {
 						return new Response("Ok", { 
 							status: 200,
 							headers: {
-								"set-cookie": `${cookieName}=${token}; ${cookieAppendices}`,
+								"set-cookie": `${cookieName}=${token}; ${cookieAppendices}; Domain=.${host};`,
 								...corsHeaders
 							}
 						})
@@ -178,7 +178,7 @@ export default {
 						return new Response("Ok", { 
 							status: 200,
 							headers: {
-								"set-cookie": `${cookieName}=; ${cookieAppendices}; Max-Age=0`,
+								"set-cookie": `${cookieName}=; ${cookieAppendices}; Domain=.${host}; Max-Age=0`,
 								...corsHeaders
 							}
 						})
