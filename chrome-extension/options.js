@@ -26,8 +26,32 @@ function handleSubmit(event) {
                 console.log("Server host saved successfully")
             })
 
-            event.submitter.removeAttribute("aria-busy")
-            errMsg.innerHTML = "Success, you may close this window now!"
+            // request permissions to host for setting the login cookie
+            chrome.permissions.request({ origins: ["https://" + serverHost + "/"] }, (granted) => {
+                if (granted) {
+                    chrome.storage.local.set({ "setting-cookies-allowed": true }).then(() => {
+                        console.log("Setting cookies allowed (saved successfully)")
+                    })
+                    chrome.cookies.set({
+                        name: "url-shortener-token",
+                        value: adminToken,
+                        domain: serverHost,
+                        path: "/",
+                        httpOnly: true,
+                        secure: true,
+                        sameSite: "strict",
+                        url: `https://${serverHost}/api/login`
+                    }, (newCookie) => {
+                        if (!newCookie) {
+                            console.error("Setting login cookie failed!")
+                        } else {
+                            console.log("Login cookie set successfully :)")
+                        }
+                    })
+                }
+                event.submitter.removeAttribute("aria-busy")
+                errMsg.innerHTML = "Success, you may close this window now!"
+            })
         } else {
             event.submitter.removeAttribute("aria-busy")
             errMsg.innerHTML = await r.text()

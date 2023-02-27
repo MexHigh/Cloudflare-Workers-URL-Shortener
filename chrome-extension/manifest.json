@@ -15,9 +15,19 @@
         "open_in_tab": false
     },
 
+    "background": {
+        "service_worker": "background.js",
+        "type": "module"
+    },
+
     "permissions": [
         "storage",
-        "tabs"
+        "tabs",
+        "cookies"
+    ],
+
+    "optional_host_permissions": [
+        "https://*/*"
     ],
 
     "commands": {
