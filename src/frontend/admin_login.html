@@ -30,7 +30,6 @@
                 }
             }).then(async (r) => {
                 if (r.ok) {
-                    //document.cookie = `url-shortener-token=${authToken}; Path=/; Secure;`
                     window.location = "/admin"
                 } else {
                     event.submitter.removeAttribute("aria-busy")

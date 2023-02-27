@@ -20,9 +20,12 @@ const corsResponse = (allowedMethods) => {
 }
 
 function getCookieValue(cookies, name) {
-	const value = `; ${cookies}`;
-	const parts = value.split(`; ${name}=`);
-	if (parts.length === 2) return parts.pop().split(';').shift();
+	const value = `; ${cookies}`
+	const parts = value.split(`; ${name}=`)
+	if (parts.length === 2) 
+		return parts.pop().split(';').shift()
+	else
+		return null
 }
 
 function isValidShortname(inShortname) {
@@ -42,8 +45,13 @@ function isValidHttpUrl(inURL) {
 function getTokenFromCookieOrHeader(request) {
 	let cookies = request.headers.get("Cookie")
 	if (cookies) {
-		return getCookieValue(cookies, cookieName) || null
+		let val = getCookieValue(cookies, cookieName)
+		if (val === null) { // cookie with that value does not exist
+			return request.headers.get("x-api-key") || null
+		}
+		return val 
 	}
+	// else: no cookies present
 	return request.headers.get("x-api-key") || null
 }
 
