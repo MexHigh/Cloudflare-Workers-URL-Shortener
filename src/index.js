@@ -238,6 +238,10 @@ export default {
 								}
 	
 								let temp = await env.DB.get("redirect-mapping", { type: "json" })
+								if (body.name in temp) {
+									return new Response("shortlink already exists", { status: 400, headers: corsHeaders })
+								}
+
 								temp[body.name] = body.target
 								await env.DB.put("redirect-mapping", JSON.stringify(temp))
 	

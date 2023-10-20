@@ -87,6 +87,7 @@
         function handleDeleteClick(event) {
             event.preventDefault()
 
+            event.target.innerHTML = ""
             event.target.setAttribute("aria-busy", "true")
             
             fetch("/api/shortlink", {
@@ -95,7 +96,6 @@
                     "name": event.target.value
                 })
             }).then(r => {
-                event.target.setAttribute("aria-busy", "true")
                 setTimeout(() => {
                     window.location.reload()
                 }, 1000)

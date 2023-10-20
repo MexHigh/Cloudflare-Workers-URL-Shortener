@@ -1,4 +1,10 @@
+/* Name and URL columns */
 #shortlinkList tr td:nth-child(1),
 #shortlinkList tr td:nth-child(2) {
     word-break: break-all;
+}
+
+/* Delete column */
+#shortlinkList tr td:nth-child(3) {
+    text-align: center;
 }
