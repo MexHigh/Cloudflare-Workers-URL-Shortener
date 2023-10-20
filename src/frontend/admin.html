@@ -107,7 +107,7 @@
         })
             .then(r => r.json())
             .then(r => {
-                for (const [key, value] of Object.entries(r)) {
+                for (const [key, value] of Object.entries(r).reverse()) {
                     let tr = document.createElement("tr")
 
                     let tdLeft = document.createElement("td")
